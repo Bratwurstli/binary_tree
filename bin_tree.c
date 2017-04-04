@@ -1,4 +1,3 @@
-// TODO testing, bug fixes
 /*
 	This simple program is an implementation of a binary tree.
 	Every entry in that tree will be a struct which contains
@@ -52,7 +51,7 @@ void insert(int key, char val[], T_ENTRY *head) {
 */
 void print(T_ENTRY *head) {
 
-	printf("%s\n", head->val);
+	printf("%s \n", head->val);
 	if (head->has_l) {
 		print(head->l_child);
 	}
@@ -67,7 +66,6 @@ void print(T_ENTRY *head) {
 */
 void delete(int key, T_ENTRY *head) {
 
-	// TODO complete function
 	// delete in left child
 	if (head->key > key) {
 		delete(key, head->l_child);
@@ -83,7 +81,6 @@ void delete(int key, T_ENTRY *head) {
 			head = head->r_child;
 			
 		}
-
 	}
 }
 
@@ -100,7 +97,7 @@ int main(void) {
 	int request;
 	int exit = 0;
 	while (!exit) {
-		printf("Press 1 to insert values, 2 to print tree, or 0 to exit: ");
+		printf("Press 1 to insert value, 2 to print tree, or 0 to exit: ");
 		scanf("%d", &request);
 		switch(request) {
 			case 0: exit = 1; break;
@@ -111,6 +108,7 @@ int main(void) {
 				scanf("%s", val);
 				if (t_empty) {
 					t_empty = 0;
+					head->key = key;
 					strcpy(head->val, val);
 				}
 				else {

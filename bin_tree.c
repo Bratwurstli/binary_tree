@@ -60,6 +60,31 @@ void print(T_ENTRY *head) {
 	}
 }
 
+/*
+	This function deletes the element with the fitting key in the 
+	tree given by head.
+*/
+void delete(int key, T_ENTRY *head) {
+
+	// delete in left child
+	if (head->key > key) {
+		delete(key, head->l_child);
+	}
+	// delete in right child
+	else if (head->key < key) {
+		delete(key, head->r_child);
+	}
+	// delete
+	else {
+		T_ENTRY *t_pointer = head;
+		if (head->has_r) {
+			head = head->r_child;
+			
+		}
+
+	}
+}
+
 int main(void) {
 
 	// initialize tree

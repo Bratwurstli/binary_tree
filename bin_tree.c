@@ -1,3 +1,4 @@
+// TODO testing, bug fixes
 /*
 	This simple program is an implementation of a binary tree.
 	Every entry in that tree will be a struct which contains
@@ -66,6 +67,7 @@ void print(T_ENTRY *head) {
 */
 void delete(int key, T_ENTRY *head) {
 
+	// TODO complete function
 	// delete in left child
 	if (head->key > key) {
 		delete(key, head->l_child);

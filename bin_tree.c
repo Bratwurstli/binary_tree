@@ -64,22 +64,66 @@ void print(T_ENTRY *head) {
 	This function deletes the element with the fitting key in the 
 	tree given by head.
 */
-void delete(int key, T_ENTRY *head) {
+void delete(int key, T_ENTRY *head, T_ENTRY *above, int lr_child, int *t_empty) {
 
 	// delete in left child
 	if (head->key > key) {
-		delete(key, head->l_child);
+		delete(key, head->l_child, head, -1, t_empty);
 	}
 	// delete in right child
 	else if (head->key < key) {
-		delete(key, head->r_child);
+		delete(key, head->r_child, head, 1, t_empty);
 	}
 	// delete
 	else {
-		T_ENTRY *t_pointer = head;
-		if (head->has_r) {
-			head = head->r_child;
-			
+		if (!head->has_l && !head->has_r) {
+			switch (lr_child) {
+				case 0: *t_empty = 0; break;
+				case -1: above->has_l = 0; break;
+				case 1: above->has_r = 0; break;
+			}
+			free(head);
+		}
+		else if (head->has_l && !head->has_r) {
+			switch (lr_child) {
+				case 0: *head = *head->l_child; free(above); break; 
+				case -1: above->l_child = head->l_child; free(head); break;
+				case 1: above->r_child = head->l_child; free(head); break;
+			}
+		}
+		else if (!head->has_l && head->has_r) {
+			switch (lr_child) {
+				case 0: *head = *head->r_child; free(above); break;
+				case -1: above->l_child = head->r_child; free(head); break;
+				case 1: above->r_child = head->r_child; free(head); break;
+			}
+		}
+		// two children :)
+		else {
+			if (!lr_child) {
+				above = head->r_child;
+				while (above->has_l) {
+					above = above->l_child;
+				}
+				above->has_l = 1;
+				above->l_child = head->l_child;
+				above = head;
+				*head = *head->r_child;
+				free(above);
+			}
+			else {
+				switch (lr_child) {
+				case -1: above->l_child = head->r_child; break;
+				case 1: above->r_child = head->r_child; break;
+				}
+				above = head->r_child;
+				while (above->has_l) {
+					above = above->l_child;
+				}
+				above->has_l = 1;
+				above->l_child = head->l_child;
+				free(head);
+			}
 		}
 	}
 }
@@ -97,9 +141,9 @@ int main(void) {
 	int request;
 	int exit = 0;
 	while (!exit) {
-		printf("Press 1 to insert value, 2 to print tree, or 0 to exit: ");
+		printf("Press 1 to insert value, 2 to print tree, 3 to delete key or 0 to exit: ");
 		scanf("%d", &request);
-		switch(request) {
+		switch (request) {
 			case 0: exit = 1; break;
 			case 1:
 				printf("Enter key: ");
@@ -115,7 +159,15 @@ int main(void) {
 					insert(key, val, head);
 				}
 				break;
-			case 2: print(head); break;
+			case 2: 
+				if (!t_empty) {
+					print(head);
+				}
+				break;
+			case 3: 
+				printf("Enter key: ");
+				scanf("%d", &key);
+				delete(key, head, head, 0, &t_empty);
 		}	
 	}
 

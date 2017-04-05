@@ -78,22 +78,21 @@ void delete(int key, T_ENTRY *head, T_ENTRY *above, int lr_child, int *t_empty) 
 	else {
 		if (!head->has_l && !head->has_r) {
 			switch (lr_child) {
-				case 0: *t_empty = 0; break;
-				case -1: above->has_l = 0; break;
-				case 1: above->has_r = 0; break;
+				case 0: *t_empty = 0; free(head); break;
+				case -1: above->has_l = 0; free(above->l_child); break;
+				case 1: above->has_r = 0; free(above->r_child); break;
 			}
-			free(head);
 		}
 		else if (head->has_l && !head->has_r) {
 			switch (lr_child) {
-				case 0: *head = *head->l_child; free(above); break; 
+				case 0: *head = *head->l_child; break; 
 				case -1: above->l_child = head->l_child; free(head); break;
 				case 1: above->r_child = head->l_child; free(head); break;
 			}
 		}
 		else if (!head->has_l && head->has_r) {
 			switch (lr_child) {
-				case 0: *head = *head->r_child; free(above); break;
+				case 0: *head = *head->r_child; break;
 				case -1: above->l_child = head->r_child; free(head); break;
 				case 1: above->r_child = head->r_child; free(head); break;
 			}
@@ -107,9 +106,7 @@ void delete(int key, T_ENTRY *head, T_ENTRY *above, int lr_child, int *t_empty) 
 				}
 				above->has_l = 1;
 				above->l_child = head->l_child;
-				above = head;
 				*head = *head->r_child;
-				free(above);
 			}
 			else {
 				switch (lr_child) {

@@ -61,6 +61,40 @@ void print(T_ENTRY *head) {
 }
 
 /*
+	This function finds a key in the tree given by head and returns the 
+	corresponding value.
+*/
+char *find(int key, T_ENTRY *head) {
+
+	// seek in left child
+	if (head->key > key) {
+		if (head->has_l) {
+			return find(key, head->l_child);
+		}
+		// not found
+		else {
+			printf("No entry with key: %d.\n", key);
+			return ":(";
+		}
+	}
+	// seek in right child
+	else if (head->key < key){
+		if (head->has_r) {
+			return find(key, head->r_child);
+		}
+		// not found
+		else {
+			printf("No entry with key: %d.\n", key);
+			return ":(";
+		}
+	}
+	// return value
+	else if (head->key == key) {
+		return head->val;
+	}
+}
+
+/*
 	This function deletes the element with the fitting key in the 
 	tree given by head.
 */
@@ -70,6 +104,10 @@ void delete(int key, T_ENTRY *head, T_ENTRY *above, int lr_child, int *t_empty) 
 	if (head->key > key) {
 		if (head->has_l) {
 			delete(key, head->l_child, head, -1, t_empty);	
+		}
+		// element not found
+		else {
+			printf("No entry with key: %d.\n", key);
 		} 
 	}
 	// delete in right child
@@ -77,11 +115,16 @@ void delete(int key, T_ENTRY *head, T_ENTRY *above, int lr_child, int *t_empty) 
 		if (head->has_r) {
 			delete(key, head->r_child, head, 1, t_empty);
 		}
+		// element not found
+		else {
+			printf("No entry with key: %d.\n", key);
+		}
 	}
 	// delete
 	else if (head->key == key){
 		if (!head->has_l && !head->has_r) {
 			switch (lr_child) {
+				// TODO Some ERROR when empty tree
 				case 0: *t_empty = 0; free(head); break;
 				case -1: above->has_l = 0; free(above->l_child); break;
 				case 1: above->has_r = 0; free(above->r_child); break;
@@ -127,10 +170,6 @@ void delete(int key, T_ENTRY *head, T_ENTRY *above, int lr_child, int *t_empty) 
 			}
 		}
 	}
-	// element not found
-	else {
-		printf("No entry with key: %d.\n", key);
-	}
 }
 
 int main(void) {
@@ -146,7 +185,7 @@ int main(void) {
 	int request;
 	int exit = 0;
 	while (!exit) {
-		printf("Press 1 to insert value, 2 to print tree, 3 to delete key or 0 to exit: ");
+		printf("Press 1 to insert value, 2 to print tree, 3 to delete key, 4 to find key or 0 to exit: ");
 		scanf("%d", &request);
 		switch (request) {
 			case 0: exit = 1; break;
@@ -172,11 +211,21 @@ int main(void) {
 				if (!t_empty) {
 					print(head);
 				}
+				else {
+					printf("Tree is empty.\n");
+				}
 				break;
 			case 3: 
 				printf("Enter key: ");
 				scanf("%d", &key);
 				delete(key, head, head, 0, &t_empty);
+				break;
+			case 4:
+				printf("Enter Key: ");
+				scanf("%d", &key);
+				strcpy(val, find(key, head));
+				printf("%s\n", val);
+				break;
 		}	
 	}
 

@@ -68,14 +68,18 @@ void delete(int key, T_ENTRY *head, T_ENTRY *above, int lr_child, int *t_empty) 
 
 	// delete in left child
 	if (head->key > key) {
-		delete(key, head->l_child, head, -1, t_empty);
+		if (head->has_l) {
+			delete(key, head->l_child, head, -1, t_empty);	
+		} 
 	}
 	// delete in right child
 	else if (head->key < key) {
-		delete(key, head->r_child, head, 1, t_empty);
+		if (head->has_r) {
+			delete(key, head->r_child, head, 1, t_empty);
+		}
 	}
 	// delete
-	else {
+	else if (head->key == key){
 		if (!head->has_l && !head->has_r) {
 			switch (lr_child) {
 				case 0: *t_empty = 0; free(head); break;
@@ -123,6 +127,10 @@ void delete(int key, T_ENTRY *head, T_ENTRY *above, int lr_child, int *t_empty) 
 			}
 		}
 	}
+	// element not found
+	else {
+		printf("No entry with key: %d.\n", key);
+	}
 }
 
 int main(void) {
@@ -145,8 +153,12 @@ int main(void) {
 			case 1:
 				printf("Enter key: ");
 				scanf("%d", &key);
-				printf("Enter value: ");
+				printf("Enter String to save (max length 9 chars): ");
 				scanf("%s", val);
+				if (strlen(val) > 9) {
+					printf("To many input arguments.\n");
+					break;
+				}
 				if (t_empty) {
 					t_empty = 0;
 					head->key = key;

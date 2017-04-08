@@ -124,8 +124,7 @@ void delete(int key, T_ENTRY *head, T_ENTRY *above, int lr_child, int *t_empty) 
 	else if (head->key == key){
 		if (!head->has_l && !head->has_r) {
 			switch (lr_child) {
-				// TODO Some ERROR when empty tree
-				case 0: *t_empty = 0; free(head); break;
+				case 0: *t_empty = 1; free(head); break;
 				case -1: above->has_l = 0; free(above->l_child); break;
 				case 1: above->has_r = 0; free(above->r_child); break;
 			}
